@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,13 +6,12 @@ import os
 import warnings
 warnings.filterwarnings("ignore")
 
-MODELS_PATH = "/content/drive/MyDrive/IA IA IA/Heart-Attack"
-
 @st.cache_resource
 def load_models():
-    model   = joblib.load(os.path.join(MODELS_PATH, "best_model_baggingclassifier_weighted_recall.joblib"))
-    ohe     = joblib.load(os.path.join(MODELS_PATH, "one_hot_encoder.joblib"))
-    scaler  = joblib.load(os.path.join(MODELS_PATH, "standard_scaler.joblib"))
+    base = os.path.dirname(__file__)
+    model  = joblib.load(os.path.join(base, "best_model_baggingclassifier_weighted_recall.joblib"))
+    ohe    = joblib.load(os.path.join(base, "one_hot_encoder.joblib"))
+    scaler = joblib.load(os.path.join(base, "standard_scaler.joblib"))
     return model, ohe, scaler
 
 model, ohe, scaler = load_models()
@@ -26,14 +24,14 @@ st.divider()
 col1, col2 = st.columns(2)
 
 with col1:
-    age = st.number_input("Edad", min_value=1, max_value=120, value=50)
+    age       = st.number_input("Edad", min_value=1, max_value=120, value=50)
     diastolic = st.number_input("Presión Diastólica (mmHg)", min_value=30, max_value=200, value=85)
     sedentary = st.number_input("Horas sedentarias por día", min_value=0.0, max_value=24.0, value=6.0, step=0.5)
 
 with col2:
-    income = st.number_input("Ingreso anual (USD)", min_value=0, max_value=1_000_000, value=50000, step=1000)
+    income   = st.number_input("Ingreso anual (USD)", min_value=0, max_value=1_000_000, value=50000, step=1000)
     activity = st.number_input("Días de actividad física por semana", min_value=0, max_value=7, value=3)
-    sex = st.selectbox("Sexo", ["Femenino", "Masculino"])
+    sex      = st.selectbox("Sexo", ["Femenino", "Masculino"])
 
 continent = st.selectbox("Continente", ["Africa", "Asia", "Europe", "North America", "Oceania", "South America"])
 
@@ -47,13 +45,14 @@ if st.button("🔍 Predecir Riesgo", use_container_width=True):
         "Income": income,
         "Physical Activity Days Per Week": activity
     }])
-    scaled = scaler.transform(num_df)
+    scaled  = scaler.transform(num_df)
     sex_val = np.array([[1 if sex == "Masculino" else 0]])
     cont_df = pd.DataFrame([[continent]], columns=["Continent"])
     encoded = ohe.transform(cont_df)
     X = np.hstack([scaled, sex_val, encoded])
+
     prediction = model.predict(X)[0]
-    proba = model.predict_proba(X)[0][1]
+    proba      = model.predict_proba(X)[0][1]
 
     st.markdown("### Resultado")
     if prediction == 1:
