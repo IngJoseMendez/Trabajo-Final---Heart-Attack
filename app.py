@@ -64,3 +64,7 @@ if st.button("🔍 Predecir Riesgo", use_container_width=True):
     st.caption("⚕️ Este resultado es orientativo. Consulta siempre a un médico.")
 
     #algo de información adicional
+    #creando nuevo dataframe con los datos de entrada para mostrarlo
+    if prediction == 1:
+        st.markdown("""
+        *holi ugu**""")
