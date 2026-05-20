@@ -7,14 +7,13 @@ import warnings
 from sklearn.preprocessing import LabelEncoder
 warnings.filterwarnings("ignore")
 
-MODELS_PATH = "/content/drive/MyDrive/IA IA IA/Heart-Attack"
-
 @st.cache_resource
 def load_models():
-    model  = joblib.load(os.path.join(MODELS_PATH, "best_model_baggingclassifier_weighted_recall.joblib"))
-    ohe    = joblib.load(os.path.join(MODELS_PATH, "one_hot_encoder.joblib"))
-    scaler = joblib.load(os.path.join(MODELS_PATH, "standard_scaler.joblib"))
-    le = LabelEncoder()
+    base   = os.path.dirname(__file__)
+    model  = joblib.load(os.path.join(base, "best_model_baggingclassifier_weighted_recall.joblib"))
+    ohe    = joblib.load(os.path.join(base, "one_hot_encoder.joblib"))
+    scaler = joblib.load(os.path.join(base, "standard_scaler.joblib"))
+    le     = LabelEncoder()
     le.fit(["Africa", "Asia", "Europe", "North America", "Oceania", "South America"])
     return model, ohe, scaler, le
 
